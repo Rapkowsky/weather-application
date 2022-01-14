@@ -15,15 +15,48 @@ const getWeather = () => {
 	const city = input.value || "Mrągowo";
 	const URL = API_LINK + city + API_KEY + API_UNITS;
 
-	axios.get(URL).then((res) => {
-		console.log(res);
-		const temp = res.data.main.temp;
-		const hum = res.data.main.humidity;
+	axios
+		.get(URL)
+		.then((res) => {
+			const temp = res.data.main.temp;
+			const hum = res.data.main.humidity;
 
-		cityName.textContent = res.data.name;
-		temperature.textContent = Math.floor(temp) + "°C";
-		humidity.textContent = hum + "%";
-	});
+			const status = Object.assign({}, ...res.data.weather);
+
+			cityName.textContent = res.data.name;
+			temperature.textContent = Math.floor(temp) + "°C";
+			humidity.textContent = hum + "%";
+			weather.textContent = status.main;
+
+			warning.textContent = "";
+			input.value = "";
+
+			if (status.id >= 200 && status.id < 300) {
+				photo.setAttribute("src", "./img/thunderstorm.png");
+			} else if (status.id >= 300 && status.id < 500) {
+				photo.setAttribute("src", "./img/drizzle.png");
+			} else if (status.id >= 500 && status.id < 600) {
+				photo.setAttribute("src", "./img/rain.png");
+			} else if (status.id >= 600 && status.id < 701) {
+				photo.setAttribute("src", "./img/ice.png");
+			} else if (status.id >= 701 && status.id < 799) {
+				photo.setAttribute("src", "./img/fog.png");
+			} else if (status.id === 800) {
+				photo.setAttribute("src", "./img/sun.png");
+			} else if (status.id > 800 && status.id < 900) {
+				photo.setAttribute("src", "./img/cloud.png");
+			} else {
+				photo.setAttribute("src", "./img/unknown.png");
+			}
+		})
+		.catch(() => (warning.textContent = "Wpisz poprawną nazwę miasta!"));
 };
 
-getWeather();
+const enterSearch = (e) => {
+	if (e.key === "Enter") {
+		getWeather();
+	}
+};
+
+input.addEventListener("keyup", enterSearch);
+button.addEventListener("click", getWeather);
