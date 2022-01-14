@@ -12,7 +12,7 @@ const API_KEY = "&appid=13fe38d29dd8cc085ef827d782d636c5";
 const API_UNITS = "&units=metric";
 
 const getWeather = () => {
-	const city = input.value || "Mrągowo";
+	const city = input.value;
 	const URL = API_LINK + city + API_KEY + API_UNITS;
 
 	axios
